@@ -1,0 +1,109 @@
+#include<bits/stdc++.h> 
+using namespace std;
+
+ 
+struct User {
+    string name;
+    double reactionTime;
+};
+
+ 
+void wait(int milliseconds) {
+    this_thread::sleep_for(chrono::milliseconds(milliseconds));
+}
+
+ 
+int getUserInput() {
+    int input;
+    while (true) {
+        cin >> input;
+        if (cin.fail()) {
+            cin.clear();
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+            cout << "Invalid input. Please enter a number: ";
+        } else {
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+            return input;
+        }
+    }
+}
+
+
+int getRandomDelay() {
+    return rand() % 3000 + 2000;
+}
+
+ 
+int main() {
+    srand(time(0));  
+
+    int numUsers;
+    cout << "Enter the number of players: ";
+    numUsers = getUserInput();
+
+    
+    vector<User> users;
+
+    for (int i = 0; i < numUsers; ++i) {
+        User user;
+
+       
+        cout << "\nEnter name of player " << (i + 1) << ": ";
+        getline(cin, user.name);
+
+        cout << user.name << ", get ready..." << endl;
+
+       
+        wait(getRandomDelay());
+
+        cout << "Press ENTER now!" << endl;
+
+        
+        auto start_time = chrono::high_resolution_clock::now();
+        
+         
+        if (cin.get() != '\n') {
+            cout << user.name << ", you pressed too early! Reaction failed." << endl;
+            user.reactionTime = numeric_limits<double>::max();  
+        } else { 
+            auto end_time = chrono::high_resolution_clock::now();
+
+             
+            chrono::duration<double, milli> reaction_time = end_time - start_time;
+            user.reactionTime = reaction_time.count();
+
+            cout << user.name << "'s reaction time is: " << user.reactionTime << " milliseconds!" << endl;
+        }
+
+         
+        users.push_back(user);
+    }
+
+    
+    sort(users.begin(), users.end(), [](const User& a, const User& b) {
+        return a.reactionTime < b.reactionTime;
+    });
+
+    
+    cout << "\n=== Final Results ===" << endl;
+    for (int i = 0; i < users.size(); ++i) {
+        if (users[i].reactionTime == numeric_limits<double>::max()) {
+            cout << users[i].name << ": No valid reaction time (failed)" << endl;
+        } else {
+            cout << users[i].name << ": " << users[i].reactionTime << " milliseconds" << endl;
+        }
+    }
+
+ 
+    User winner = *min_element(users.begin(), users.end(), [](const User& a, const User& b) {
+        return a.reactionTime < b.reactionTime;
+    });
+
+    if (winner.reactionTime != numeric_limits<double>::max()) {
+        cout << "\nWinner is " << winner.name << " with a reaction time of " << winner.reactionTime << " milliseconds!" << endl;
+    } else {
+        cout << "\nNo valid winner, all users failed to register a reaction!" << endl;
+    }
+
+    return 0;
+}
