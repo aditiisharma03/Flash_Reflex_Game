@@ -1,1 +1,1 @@
-# Flash_Reflex_Game
+Flash Reflex is an engaging reaction time game designed to challenge and improve your reflexes. The goal is to react as quickly as possible when it says 'enter' on the screen. This simple yet addictive game helps you test and enhance your reaction speed in a fun and interactive way.
